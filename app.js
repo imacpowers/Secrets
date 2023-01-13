@@ -21,8 +21,9 @@ app.use(bodyParser.urlencoded({
 
 app.use(session({
   secret: "Our little secret.",
-  //store: MongoStore.create({mongoUri:"mongodb://illuminada:test1234@cluster0.5esdm3p.mongodb.net/secertsDB"}),
+  //store: MongoStore.create({mongoUrl:"mongodb://illuminada:test1234@cluster0.5esdm3p.mongodb.net/secertsDB"}),
   resave: false,
+  
   saveUninitialized: false
 }));
 
@@ -135,10 +136,16 @@ app.post("/submit", function(req, res){
 });
 
 app.get("/logout", function(req, res){
-  req.logout();
-  res.redirect("/");
+  //req.logout();
+   req.session.destroy(function (err) {
+    res.redirect('/'); //Inside a callback… bulletproof!
+   });
 });
-
+// app.get('/logout',(req,res)=>{
+//   req.session.destroy(function (err) {
+//     res.redirect('/'); //Inside a callback… bulletproof!
+//    });
+//})
 app.post("/register", function(req, res){
 
   User.register({username: req.body.username}, req.body.password, function(err, user){
